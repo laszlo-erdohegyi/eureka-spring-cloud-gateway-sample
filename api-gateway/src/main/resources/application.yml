@@ -1,0 +1,30 @@
+server:
+  port: 8085
+
+spring:
+  application:
+    name: api-gateway
+  cloud:
+    gateway:
+      routes:
+        - id: case-manager
+          uri: lb://case-manager
+          predicates:
+            - Path=/api/case/**
+        - id: event-manager
+          uri: lb://event-manager
+          predicates:
+            - Path=/api/event/**
+        - id: person-manager
+          uri: lb://person-manager
+          predicates:
+            - Path=/api/person/**
+        - id: location-manager
+          uri: lb://location-manager
+          predicates:
+            - Path=/api/location/**
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka/
