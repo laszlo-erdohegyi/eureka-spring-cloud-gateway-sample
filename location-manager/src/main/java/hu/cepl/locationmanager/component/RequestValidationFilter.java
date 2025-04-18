@@ -20,8 +20,13 @@ public class RequestValidationFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
-        String serviceName = request.getHeader("X-Service-Name");
+        String path = request.getRequestURI();
+        if (path.startsWith("/v3/api-docs") || path.startsWith("/swagger-ui")) {
+            filterChain.doFilter(request, response);
+            return;
+        }
 
+        String serviceName = request.getHeader("X-Service-Name");
         if (serviceName == null || !allowedServices.contains(serviceName)) {
             response.sendError(HttpServletResponse.SC_FORBIDDEN, "Service not allowed");
             return;
